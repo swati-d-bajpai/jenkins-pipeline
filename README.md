@@ -1,6 +1,6 @@
 # Travel Memory
 
-`.env` file to work with the backend after creating a database in mongodb: 
+`.env` file to work with the backend after creating a database in mongodb1: 
 
 ```
 MONGO_URI='ENTER_YOUR_URL'
