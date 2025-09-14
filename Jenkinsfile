@@ -20,7 +20,6 @@
 
 // }
 
-// The Final Travel Memory Jenkinsfile
 pipeline {
     // 1. Use the agent we configured
     agent { node 'swati-node' }
@@ -45,13 +44,12 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                 git branch: 'main', url: 'https://github.com/swati-d-bajpai/jenkins-pipeline.git'
+                git branch: 'main', url: 'https://github.com/swati-d-bajpai/jenkins-pipeline.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Run npm install inside the 'backend' folder
                 dir('backend') {
                     sh 'npm install'
                 }
@@ -59,7 +57,6 @@ pipeline {
         }
 
         stage('Run Tests') {
-            // A conditional stage based on our parameter
             when { expression { return params.RUN_TESTS } }
             steps {
                 dir('backend') {
@@ -71,41 +68,33 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 dir('backend') {
-                    // Use credentials securely
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'swati-aws-creds']]){
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'swati-aws-creds']]) {
                         echo "Logging into AWS..."
-                        // sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                         sh "aws s3 ls"
-
-                        // Create a unique tag for our image using the Jenkins build number
-                        // def taggedImage = "${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
                         echo "${env.app_name} running in aws"
-                        }
+
+                        // Example for Docker build & push (uncomment if needed)
+                        // def taggedImage = "${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
                         // echo "Building image: ${taggedImage}"
-                        // Build the Docker image from the Dockerfile in the current directory
                         // sh "docker build -t ${taggedImage} ."
-                                              
                         // echo "Pushing image: ${taggedImage}"
-                        // Push the newly built image to Docker Hub
                         // sh "docker push ${taggedImage}"
                     }
                 }
             }
         }
     }
-    
-    // Post-build actions for cleanup
+
     post {
         always {
             echo "Pipeline finished. Cleaning up."
-            // Always logout to be safe
             // sh 'docker logout'
         }
         success {
             echo "Image pushed successfully!"
         }
+        failure {
+            echo "Pipeline failed. Check logs!"
+        }
     }
-
-
-
-
+}
