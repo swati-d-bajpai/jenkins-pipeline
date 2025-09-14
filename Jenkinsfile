@@ -72,7 +72,7 @@ pipeline {
             steps {
                 dir('backend') {
                     // Use credentials securely
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'swati-aws-creds']])
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'swati-aws-creds']]){
                         echo "Logging into AWS..."
                         // sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                         sh "aws s3 ls"
@@ -80,6 +80,7 @@ pipeline {
                         // Create a unique tag for our image using the Jenkins build number
                         // def taggedImage = "${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
                         echo "${env.app_name} running in aws"
+                        }
                         // echo "Building image: ${taggedImage}"
                         // Build the Docker image from the Dockerfile in the current directory
                         // sh "docker build -t ${taggedImage} ."
@@ -104,6 +105,7 @@ pipeline {
             echo "Image pushed successfully!"
         }
     }
+
 
 
 
