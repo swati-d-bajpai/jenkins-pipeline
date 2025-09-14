@@ -45,7 +45,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/swati-d-bajpai/jenkins-pipeline/'
+                 git branch: 'main', url: 'https://github.com/swati-d-bajpai/jenkins-pipeline.git'
             }
         }
 
@@ -104,5 +104,6 @@ pipeline {
             echo "Image pushed successfully!"
         }
     }
+
 
 
